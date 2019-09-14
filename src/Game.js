@@ -270,7 +270,7 @@ function isBlock2Ends(squares, type, competitor) {
     // Chặn 2 đầu dọc
     case "vertical":
       for (i = row - 1; i >= 0; i--) {
-        if (squares[(row + i) * MaxWidth + column] === competitor) {
+        if (squares[i * MaxWidth + column] === competitor) {
           hasCompetitor = true;
           break;
         }
