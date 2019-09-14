@@ -1,6 +1,5 @@
 import React from 'react';
 import './style.css';
-
 const MaxHeight = 20;
 const MaxWidth = 20;
 
@@ -43,6 +42,7 @@ class Board extends React.Component {
 
     value = i;
     squares[i] = this.state.xIsNext ? 'X' : 'O';
+    
     this.setState({
       squares: squares,
       xIsNext: !this.state.xIsNext,
@@ -63,9 +63,9 @@ class Board extends React.Component {
     let status;
     if (winner) {
       this.state.isEnded = true;
-      status = 'Winner: ' + winner;
+      status = 'Người chiến thắng là: ' + winner;
     } else {
-      status = 'Next player: ' + (this.state.xIsNext ? 'X' : 'O');
+      status = 'Lượt tiếp theo là: ' + (this.state.xIsNext ? 'X' : 'O');
     }
 
     let board = [];
@@ -81,6 +81,10 @@ class Board extends React.Component {
 
     const Style = {
       margin: '15px',
+      background: '#4CAF50', /* Green */
+      border: 'none',
+      color: 'white',
+      padding: '15px 30px',
     };
 
     return (
@@ -90,6 +94,7 @@ class Board extends React.Component {
         </div>
         {board}
       </div>
+      
     );
   }
 }
@@ -233,13 +238,10 @@ function calculateWinner(squares) {
 
   }
 
-
   return null;
 }
 
 function isBlock2Ends(squares, type, competitor) {
-
-  console.log(competitor);
   var row = Math.floor(value / 20);
   var column = value % 20;
   var hasCompetitor = false;
