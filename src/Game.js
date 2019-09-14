@@ -36,7 +36,7 @@ class Board extends React.Component {
 
   handleClick(i) {
     const squares = this.state.squares.slice();
-    
+
     if (this.state.isEnded || squares[i]) {
       return;
     }
@@ -126,10 +126,10 @@ function calculateWinner(squares) {
 
     // Trường hợp đủ 5 con trong bàn cờ
     var isWon = true;
-    
-    
+
+
     for (var i = index; i < index + 5; i++) {
-      
+
       if (i > MaxHeight - 1) {
         isWon = false;
         break;
@@ -141,10 +141,9 @@ function calculateWinner(squares) {
       }
     }
 
-    if (isWon === true) {
+    if (isWon === true && !isBlock2Ends(squares, "vertical", thisValue === 'X' ? 'O' : 'X')) {
       return thisValue;
     }
-
   }
 
   // // Kiểm tra hàng ngang chứa điểm vừa đánh
@@ -156,9 +155,9 @@ function calculateWinner(squares) {
     }
 
     // Trường hợp đủ 5 con trong bàn cờ
-    isWon = true;    
+    isWon = true;
     for (i = index; i < index + 5; i++) {
-      
+
       if (i > MaxWidth - 1) {
         isWon = false;
         break;
@@ -170,10 +169,10 @@ function calculateWinner(squares) {
       }
     }
 
-    if (isWon === true) {
+    console.log('Ô vừa đánh là ' + thisValue);
+    if (isWon === true && !isBlock2Ends(squares, "horizontal", thisValue === 'X' ? 'O' : 'X')) {
       return thisValue;
     }
-
   }
 
   // // Kiểm tra hàng chéo từ trái qua, trên xuống chứa điểm vừa đánh
@@ -181,13 +180,13 @@ function calculateWinner(squares) {
 
     // Nếu ô column + index (Ô đầu tiên của dãy 5) nằm ngoài bàn cờ
     if (index + column < 0 || index + row < 0) {
-      continue;   
+      continue;
     }
 
     // Trường hợp đủ 5 con trong bàn cờ
-    isWon = true;    
+    isWon = true;
     for (i = index; i < index + 5; i++) {
-      
+
       if (i + column > MaxWidth - 1 || i + row > MaxHeight - 1) {
         isWon = false;
         break;
@@ -199,7 +198,7 @@ function calculateWinner(squares) {
       }
     }
 
-    if (isWon === true) {
+    if (isWon === true && !isBlock2Ends(squares, "backslash", thisValue === 'X' ? 'O' : 'X')) {
       return thisValue;
     }
 
@@ -210,13 +209,13 @@ function calculateWinner(squares) {
 
     // Nếu ô column + index (Ô đầu tiên của dãy 5) nằm ngoài bàn cờ
     if (index + column < 0 || row - index > MaxHeight - 1) {
-      continue;   
+      continue;
     }
 
     // Trường hợp đủ 5 con trong bàn cờ
-    isWon = true;    
+    isWon = true;
     for (i = index; i < index + 5; i++) {
-      
+
       if (i + column > MaxWidth - 1 || row - i < 0) {
         isWon = false;
         break;
@@ -228,12 +227,112 @@ function calculateWinner(squares) {
       }
     }
 
-    if (isWon === true) {
+    if (isWon === true && !isBlock2Ends(squares, "slash", thisValue === 'X' ? 'O' : 'X')) {
       return thisValue;
     }
 
   }
+
+
   return null;
+}
+
+function isBlock2Ends(squares, type, competitor) {
+
+  console.log(competitor);
+  var row = Math.floor(value / 20);
+  var column = value % 20;
+  var hasCompetitor = false;
+
+  switch (type) {
+
+    // Chặn 2 đầu ngang
+    case 'horizontal':
+      for (var i = column - 1; i >= 0; i--) {
+        if (squares[row * MaxWidth + i] === competitor) {
+          hasCompetitor = true;
+          break;
+        }
+      }
+
+      if (hasCompetitor) {
+        for (i = column + 1; i < MaxWidth; i++) {
+          if (squares[row * MaxWidth + i] === competitor) {
+            return true;
+          }
+        }
+      } else {
+        return false;
+      }
+
+      break;
+
+    // Chặn 2 đầu dọc
+    case "vertical":
+      for (i = row - 1; i >= 0; i--) {
+        if (squares[(row + i) * MaxWidth + column] === competitor) {
+          hasCompetitor = true;
+          break;
+        }
+      }
+
+      if (hasCompetitor) {
+        for (i = row + 1; i < MaxHeight; i++) {
+          if (squares[i * MaxWidth + column] === competitor) {
+            return true;
+          }
+        }
+      } else {
+        return false;
+      }
+
+      break;
+
+    // Chặn 2 đầu chéo "/"
+    case "slash":
+
+      for (i = 1; row + i < MaxHeight - 1 && column - i >= 0; i++){
+        if (squares[(row + i)*MaxWidth + column - i] === competitor) {
+          hasCompetitor = true;
+          break;
+        }
+      }
+
+      if (hasCompetitor) {
+        for (i = 1; row - i >= 0 && column + i < MaxWidth; i++){
+          if (squares[(row - i) * MaxWidth + column + i] === competitor) {
+            return true;
+          }
+        }
+      } else {
+        return false;
+      }
+      break;
+
+    // Chặn 2 đầu chéo "\"
+    case "backslash":
+        for (i = 1; row - i >= 0 && column - i >= 0; i++){
+          if (squares[(row - i)*MaxWidth + column - i] === competitor) {
+            hasCompetitor = true;
+            break;
+          }
+        }
+  
+        if (hasCompetitor) {
+          for (i = 1; row + i < MaxHeight && column + i < MaxWidth; i++){
+            if (squares[(row + i) * MaxWidth + column + i] === competitor) {
+              return true;
+            }
+          }
+        } else {
+          return false;
+        }
+        break;
+    default:
+      break;
+  }
+
+  return false;
 }
 
 export default Game;
