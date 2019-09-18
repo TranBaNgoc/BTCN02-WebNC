@@ -1,8 +1,8 @@
 import React from 'react';
-import './style.css';
+import './App.css';
+
 const MaxHeight = 20;
 const MaxWidth = 20;
-
 var value = -1;
 
 function Square(props) {
@@ -42,7 +42,7 @@ class Board extends React.Component {
 
     value = i;
     squares[i] = this.state.xIsNext ? 'X' : 'O';
-    
+
     this.setState({
       squares: squares,
       xIsNext: !this.state.xIsNext,
@@ -94,22 +94,11 @@ class Board extends React.Component {
         </div>
         {board}
       </div>
-      
+
     );
   }
 }
 
-class Game extends React.Component {
-  render() {
-    return (
-      <div className="game">
-        <div className="game-board">
-          <Board />
-        </div>
-      </div>
-    );
-  }
-}
 
 function calculateWinner(squares) {
 
@@ -293,15 +282,15 @@ function isBlock2Ends(squares, type, competitor) {
     // Chặn 2 đầu chéo "/"
     case "slash":
 
-      for (i = 1; row + i < MaxHeight - 1 && column - i >= 0; i++){
-        if (squares[(row + i)*MaxWidth + column - i] === competitor) {
+      for (i = 1; row + i < MaxHeight - 1 && column - i >= 0; i++) {
+        if (squares[(row + i) * MaxWidth + column - i] === competitor) {
           hasCompetitor = true;
           break;
         }
       }
 
       if (hasCompetitor) {
-        for (i = 1; row - i >= 0 && column + i < MaxWidth; i++){
+        for (i = 1; row - i >= 0 && column + i < MaxWidth; i++) {
           if (squares[(row - i) * MaxWidth + column + i] === competitor) {
             return true;
           }
@@ -313,23 +302,23 @@ function isBlock2Ends(squares, type, competitor) {
 
     // Chặn 2 đầu chéo "\"
     case "backslash":
-        for (i = 1; row - i >= 0 && column - i >= 0; i++){
-          if (squares[(row - i)*MaxWidth + column - i] === competitor) {
-            hasCompetitor = true;
-            break;
+      for (i = 1; row - i >= 0 && column - i >= 0; i++) {
+        if (squares[(row - i) * MaxWidth + column - i] === competitor) {
+          hasCompetitor = true;
+          break;
+        }
+      }
+
+      if (hasCompetitor) {
+        for (i = 1; row + i < MaxHeight && column + i < MaxWidth; i++) {
+          if (squares[(row + i) * MaxWidth + column + i] === competitor) {
+            return true;
           }
         }
-  
-        if (hasCompetitor) {
-          for (i = 1; row + i < MaxHeight && column + i < MaxWidth; i++){
-            if (squares[(row + i) * MaxWidth + column + i] === competitor) {
-              return true;
-            }
-          }
-        } else {
-          return false;
-        }
-        break;
+      } else {
+        return false;
+      }
+      break;
     default:
       break;
   }
@@ -337,4 +326,18 @@ function isBlock2Ends(squares, type, competitor) {
   return false;
 }
 
-export default Game;
+function App() {
+  return (
+    <div className="App">
+      <header className="App-header">
+        <div className="game">
+          <div className="game-board">
+            <Board />
+          </div>
+        </div>
+      </header>
+    </div>
+  );
+}
+
+export default App;
